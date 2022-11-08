@@ -6,27 +6,59 @@ using UnityEngine.UI;
 
 public class Quiz : MonoBehaviour
 {
+    [Header("Questions")]
     [SerializeField] TextMeshProUGUI questionText;
     [SerializeField] QuestionSO question;
+
+    [Header("Answers")]
     [SerializeField] GameObject[] answersButtons;
     int correctAnswerIndex;
+    bool hasAnsweredEarly;
+
+    [Header("Button Colors")]
     [SerializeField] Sprite defaultAnswerSprite;
     [SerializeField] Sprite correctAnswerSprite;
-    //[SerializeField] Sprite wrongAnswerSprite;
+
+    [Header("Timer")]
+    [SerializeField] Image timerImage;
+    Timer timer;
 
     void Start()
     {
-        questionText.text = question.GetQuestion();
-
-        for(int i = 0; i < answersButtons.Length; i++)
-        {
-        TextMeshProUGUI buttonText = answersButtons[i].GetComponentInChildren<TextMeshProUGUI>();
-        buttonText.text = question.GetAnswer(i);
-        }
+        timer = FindObjectOfType<Timer>();
+        GetNextQuestion();
 
     }
 
+    void Update()
+    {
+        timerImage.fillAmount = timer.fillFraction;
+
+        if(timer.loadNextQuestion)
+        {
+            hasAnsweredEarly = false;
+            GetNextQuestion();
+            timer.loadNextQuestion = false;
+        }
+        else if(!hasAnsweredEarly && !timer.isAnsweringQuestion)
+        { 
+            DisplayAnswer(-1);
+            SetButtonsState(false);
+
+
+        }
+        
+    }
+
     public void OnAnswerSelected(int index)
+    {
+        hasAnsweredEarly = true;
+        DisplayAnswer(index);
+        SetButtonsState(false);
+        timer.CancelTimer();
+    }
+
+        void DisplayAnswer(int index)
     {
         Image buttonImage;
 
@@ -45,6 +77,49 @@ public class Quiz : MonoBehaviour
             buttonImage.sprite = correctAnswerSprite;
             //Image wrongButtonImage = answersButtons[index].GetComponent<Image>();
             //wrongButtonImage.sprite = wrongAnswerSprite;
+        }
+
+    }
+
+
+
+    void GetNextQuestion()
+    {
+        SetButtonsState(true);
+        SetDefaultButtonSprites();
+        DisplayQuestion();
+
+    }
+
+    void DisplayQuestion()
+    {
+        questionText.text = question.GetQuestion();
+
+        for(int i = 0; i < answersButtons.Length; i++)
+        {
+        TextMeshProUGUI buttonText = answersButtons[i].GetComponentInChildren<TextMeshProUGUI>();
+        buttonText.text = question.GetAnswer(i);
+        }
+
+    }
+
+    
+    void SetButtonsState(bool state)
+    {
+        for(int i =0; i < answersButtons.Length; i++)
+        {
+            Button button = answersButtons[i].GetComponent<Button>();
+            button.interactable = state;
+        }
+    }
+
+    void SetDefaultButtonSprites()
+    {
+
+        for(int i = 0; i < answersButtons.Length; i++)
+        {
+            Image buttonImage = answersButtons[i].GetComponent<Image>();
+            buttonImage.sprite = defaultAnswerSprite;
         }
 
     }
