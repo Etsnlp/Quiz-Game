@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89c27c301aa309444ab5302b7863c6b5, type: 3}
   m_Name: New Question 4
   m_EditorClassIdentifier: 
-  question_01: What year was Nintendo founded?
-  question_02: What is the highest-selling gaming console to date?
-  question_03: Blizzard Entertainment is most well known for what video game franchise?
-  question_04: What year was Nintendo founded?
-  question_05: How many people sing in the opening song to Skyrim?
+  question: John Leguizamo and Bob Hoskins portrayed which video game brothers?
+  answers:
+  - Mega Man and Proto Man
+  - Paxton Fettel and The Point Man
+  - Sean and Carl Johnson
+  - Mario and Luigi
+  correctAnswerIndex: 3
